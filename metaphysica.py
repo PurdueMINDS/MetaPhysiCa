@@ -7,7 +7,7 @@ Usage:
 Options:
   --data=data                       Dataset name
   --datatype=datatype               Dataset type (2: OOD X0; 3: OOD X0 and W*) [default: 2]
-  --polynomial_power=p              Max power of polynomial basis [default: 2]
+  --polynomial_power=p              Max power of polynomial basis [default: 3]
   --lr=lr                           Learning rate [default: 1e-2]
   --lambda_phi=r1                   L1 regularization strength [default: 1e-2]
   --lambda_vrex=r2                  V-REx penalty [default: 0]
@@ -51,6 +51,8 @@ class MetaPhysiCa(nn.Module):
         polynomial_library = ps.PolynomialLibrary(degree=self.polynomial_power)
         fourier_library = ps.FourierLibrary(n_frequencies=1)
         self.feature_library = ps.ConcatLibrary([polynomial_library, fourier_library])
+
+        # Change to custom basis library if basis functions are parameterized.
 
         # is_basis_params = model_params.get("is_basis_params", False)
         # self.feature_library = BasisLibrary(input_dim=self.state_dim)
@@ -363,9 +365,6 @@ if __name__ == '__main__':
         "lambda_vrex": float(args["--lambda_vrex"]),
         "lambda_phi": float(args["--lambda_phi"]),
         "n_batches": 1,
-        # "optimizer_type": "sgd",
-        # "xi_init_type": "rand",
-        # "fit": False,
 
         # Test params
         "n_test_inner_epochs": 10000,
